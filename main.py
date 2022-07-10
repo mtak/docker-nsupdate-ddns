@@ -26,10 +26,10 @@ def main():
             " not found, exiting...")
         sys.exit(1)
 
-    if not config['ONE_SHOT']:
+    if not eval(config['ONE_SHOT']):
         while True:
             loop()
-            time.sleep(config['REFRESH_INTERVAL'])
+            time.sleep(int(config['REFRESH_INTERVAL']))
 
     loop()
 
@@ -57,7 +57,7 @@ def get_config():
         **os.environ
     }
 
-    print("Config values:")
+    print("Detected config values:")
     for item in ['DOCKER_SOCKET', 'DOMAIN', 'HOSTNAME_LABEL', 'DEFAULT_NETWORK', 'REFRESH_INTERVAL', 'ONE_SHOT', 'NAMESERVER', 'TSIG_NAME']:
         print(item, end=": ")
         print(x[item])
