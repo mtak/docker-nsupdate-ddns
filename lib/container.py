@@ -33,7 +33,7 @@ def get_container_ip(container):
         x = container.attrs['NetworkSettings']['Networks'][network_name]['IPAddress']
 
     if config['DEFAULT_NETWORK'] in container.attrs['NetworkSettings']['Networks']:
-        x = container.attrs['NetworkSettings']['Networks'][config['DEFAULT_NETWORK']]
+        x = container.attrs['NetworkSettings']['Networks'][config['DEFAULT_NETWORK']]['IPAddress']
 
     return x
 
