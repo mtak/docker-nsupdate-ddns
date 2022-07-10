@@ -2,6 +2,7 @@ import dns.update
 import dns.query
 import dns.tsigkeyring
 import ipaddress
+from datetime import datetime
 
 config = {}
 
@@ -9,7 +10,9 @@ config = {}
 def add_records(records):
     keyring = dns.tsigkeyring.from_text(
         {config['TSIG_NAME']: config['TSIG_KEY']})
+
     for hostname, ip in records.items():
+        print(datetime.now().isoformat(), end=" ")
         print("Adding record for " + hostname + "(" + ip + ")")
 
         rrtype = "A"
@@ -27,8 +30,11 @@ def add_records(records):
 def delete_records(records):
     keyring = dns.tsigkeyring.from_text(
         {config['TSIG_NAME']: config['TSIG_KEY']})
+
     for hostname, ip in records.items():
+        print(datetime.now().isoformat(), end=" ")
         print("Deleting record for " + hostname + "(" + ip + ")")
+
         update = dns.update.Update(config['DOMAIN'], keyring=keyring)
         update.delete(hostname)
         dns.query.tcp(update, config['NAMESERVER'], timeout=2)
