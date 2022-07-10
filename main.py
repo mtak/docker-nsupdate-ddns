@@ -58,7 +58,16 @@ def get_config():
     }
 
     print("Detected config values:")
-    for item in ['DOCKER_SOCKET', 'DOMAIN', 'HOSTNAME_LABEL', 'DEFAULT_NETWORK', 'REFRESH_INTERVAL', 'ONE_SHOT', 'NAMESERVER', 'TSIG_NAME']:
+    for item in [
+        'DOCKER_SOCKET',
+        'DOMAIN',
+        'IGNORE_LABEL',
+        'HOSTNAME_LABEL',
+        'DEFAULT_NETWORK',
+        'REFRESH_INTERVAL',
+        'ONE_SHOT',
+        'NAMESERVER',
+            'TSIG_NAME']:
         print(item, end=": ")
         print(x[item])
 
