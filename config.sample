@@ -1,3 +1,4 @@
+DOCKER_SOCKET=/var/run/docker.sock
 DOMAIN=int.mtak.nl
 HOSTNAME_LABEL=nl.mtak.docker-bind-ddns.hostname
 DEFAULT_NETWORK=10.100.0.192/26

@@ -11,8 +11,8 @@ def get_container_name(container):
     """
     x = container.attrs['Name'][1:]
 
-    if config['hostname_label'] in container.attrs['Config']['Labels']:
-        x = container.attrs['Config']['Labels'][config['hostname_label']]
+    if config['HOSTNAME_LABEL'] in container.attrs['Config']['Labels']:
+        x = container.attrs['Config']['Labels'][config['HOSTNAME_LABEL']]
 
     x = x.replace("_", "-")  # Be compliant with RFC1035
     return x
@@ -28,11 +28,12 @@ def get_container_ip(container):
     x = container.attrs['NetworkSettings']['IPAddress']
 
     if next(iter(container.attrs['NetworkSettings']['Networks'])):
-        network_name = next(iter(container.attrs['NetworkSettings']['Networks']))
+        network_name = next(
+            iter(container.attrs['NetworkSettings']['Networks']))
         x = container.attrs['NetworkSettings']['Networks'][network_name]['IPAddress']
 
-    if config['default_network'] in container.attrs['NetworkSettings']['Networks']:
-        x = container.attrs['NetworkSettings']['Networks'][config['default_network']]
+    if config['DEFAULT_NETWORK'] in container.attrs['NetworkSettings']['Networks']:
+        x = container.attrs['NetworkSettings']['Networks'][config['DEFAULT_NETWORK']]
 
     return x
 

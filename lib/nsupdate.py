@@ -7,7 +7,8 @@ config = {}
 
 
 def add_records(records):
-    keyring = dns.tsigkeyring.from_text({config['tsig_name']: config['tsig_key']})
+    keyring = dns.tsigkeyring.from_text(
+        {config['TSIG_NAME']: config['TSIG_KEY']})
     for hostname, ip in records.items():
         print("Adding record for " + hostname + "(" + ip + ")")
 
@@ -18,18 +19,19 @@ def add_records(records):
         if isinstance(address, ipaddress.IPv6Address):
             rrtype = "AAAA"
 
-        update = dns.update.Update(config['domain'], keyring=keyring)
+        update = dns.update.Update(config['DOMAIN'], keyring=keyring)
         update.add(hostname, 60, rrtype, ip)
-        dns.query.tcp(update, config['nameserver'], timeout=2)
+        dns.query.tcp(update, config['NAMESERVER'], timeout=2)
 
 
 def delete_records(records):
-    keyring = dns.tsigkeyring.from_text({config['tsig_name']: config['tsig_key']})
+    keyring = dns.tsigkeyring.from_text(
+        {config['TSIG_NAME']: config['TSIG_KEY']})
     for hostname, ip in records.items():
         print("Deleting record for " + hostname + "(" + ip + ")")
-        update = dns.update.Update(config['domain'], keyring=keyring)
+        update = dns.update.Update(config['DOMAIN'], keyring=keyring)
         update.delete(hostname)
-        dns.query.tcp(update, config['nameserver'], timeout=2)
+        dns.query.tcp(update, config['NAMESERVER'], timeout=2)
 
 
 def init(_config):

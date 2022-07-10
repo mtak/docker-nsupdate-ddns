@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 import os
+import stat
 import sys
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 import time
 
 from lib import *
@@ -12,12 +13,23 @@ ipam4_old = {}
 
 
 def main():
-    get_config()
+    global config
+    config = get_config()
 
-    if not config['one_shot']:
+    try:
+        stat.S_ISSOCK(os.stat(config['DOCKER_SOCKET']).st_mode)
+    except Exception as e:
+        print(e)
+        print(
+            "Docker socket " +
+            config['DOCKER_SOCKET'] +
+            " not found, exiting...")
+        sys.exit(1)
+
+    if not config['ONE_SHOT']:
         while True:
             loop()
-            time.sleep(config['refresh_interval'])
+            time.sleep(config['REFRESH_INTERVAL'])
 
     loop()
 
@@ -39,16 +51,13 @@ def loop():
 
 def get_config():
     config_file = sys.argv[1] if len(sys.argv) >= 2 else 'config'
-    load_dotenv(config_file)
 
-    config['domain'] = os.environ.get("DOMAIN")
-    config['hostname_label'] = os.environ.get("HOSTNAME_LABEL")
-    config['default_network'] = os.environ.get("DEFAULT_NETWORK")
-    config['refresh_interval'] = int(os.environ.get("REFRESH_INTERVAL"))
-    config['one_shot'] = os.environ.get("ONE_SHOT").lower() in ['true', 'yes']
-    config['nameserver'] = os.environ.get("NAMESERVER")
-    config['tsig_name'] = os.environ.get("TSIG_NAME")
-    config['tsig_key'] = os.environ.get("TSIG_KEY")
+    x = {
+        **dotenv_values(os.path.join(os.getcwd(), config_file)),
+        **os.environ
+    }
+
+    return x
 
 
 def determine_additions(ipam, ipam_old):
