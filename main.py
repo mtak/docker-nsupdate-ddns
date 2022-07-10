@@ -57,6 +57,11 @@ def get_config():
         **os.environ
     }
 
+    print("Config values:")
+    for item in ['DOCKER_SOCKET', 'DOMAIN', 'HOSTNAME_LABEL', 'DEFAULT_NETWORK', 'REFRESH_INTERVAL', 'ONE_SHOT', 'NAMESERVER', 'TSIG_NAME']:
+        print(item, end=": ")
+        print(x[item])
+
     return x
 
 
