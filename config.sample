@@ -1,9 +1,10 @@
 DOCKER_SOCKET=/var/run/docker.sock
 DOMAIN=int.mtak.nl
-HOSTNAME_LABEL=nl.mtak.docker-bind-ddns.hostname
+IGNORE_LABEL=nl.mtak.docker-nsupdate-ddns.ignore
+HOSTNAME_LABEL=nl.mtak.docker-nsupdate-ddns.hostname
 DEFAULT_NETWORK=10.100.0.192/26
 REFRESH_INTERVAL=10
-ONE_SHOT=True
+ONE_SHOT=False
 NAMESERVER=10.100.0.11
 TSIG_NAME=dck1
 TSIG_KEY=SyYhvI=

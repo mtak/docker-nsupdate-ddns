@@ -16,6 +16,7 @@ docker run -d \
    -v /var/run/docker.sock:/var/run/docker.sock \
    -e DOCKER_SOCKET=/var/run/docker.sock \
    -e DOMAIN=int.mtak.nl \
+   -e IGNORE_LABEL=nl.mtak.docker-nsupdate-ddns.ignore \
    -e HOSTNAME_LABEL=nl.mtak.docker-nsupdate-ddns.hostname \
    -e DEFAULT_NETWORK=10.100.0.192/26 \
    -e REFRESH_INTERVAL=5 \
@@ -31,6 +32,7 @@ docker run -d \
 cat <<EOF >configfile
 DOCKER_SOCKET=/var/run/docker.sock
 DOMAIN=int.mtak.nl
+IGNORE_LABEL=nl.mtak.docker-nsupdate-ddns.ignore
 HOSTNAME_LABEL=nl.mtak.docker-nsupdate-ddns.hostname
 DEFAULT_NETWORK=10.100.0.192/26
 REFRESH_INTERVAL=5

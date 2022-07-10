@@ -45,6 +45,9 @@ def generate_container_list():
     ipam4 = {}
 
     for container in container_list:
+        if config['IGNORE_LABEL'] in container.attrs['Config']['Labels']:
+            continue
+
         container_name = get_container_name(container)
         container_ip = get_container_ip(container)
         if container_ip:
