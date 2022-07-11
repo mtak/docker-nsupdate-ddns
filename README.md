@@ -88,12 +88,12 @@ docker run -d \
 
 - [x] Eventual redundancy (Bind9 zone transfers to secondary)
 - [x] Support for multiple individual Docker servers
-- [ ]IPv6 support
-- [x]Detect hostname in decreasing order of priority:
+- [ ] IPv6 support
+- [x] Detect hostname in decreasing order of priority:
     - label
     - Container name
-- [x]Forward-only
-- [ ]Clean up DNS (DNS is stateful but the script isn't, so there might be a mismatch)
+- [x] Forward-only
+- [ ] Clean up DNS (DNS is stateful but the script isn't, so there might be a mismatch)
 
 ### Nice to have
 
