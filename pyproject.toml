@@ -22,8 +22,14 @@ dependencies = [
 ]
 license = {file = "LICENSE.md"}
 
+[tool.setuptools]
+include-package-data = true
+
 [tool.setuptools.packages.find]
 include = ["docker_nsupdate_ddns*"]
+
+[tool.setuptools.package-data]
+docker_nsupdate_ddns = ["default.config.env"]
 
 [project.urls]
 homepage = "https://github.com/mtak/docker-nsupdate-ddns"

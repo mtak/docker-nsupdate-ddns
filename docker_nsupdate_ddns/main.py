@@ -31,15 +31,16 @@ def main():
 def check_required_vars(_config):
     # Check for all required config
     required_vars = [
-        'DOCKER_SOCKET',
         'DOMAIN',
-        'IGNORE_LABEL',
+        'NAMESERVER',
+        'TSIG_NAME',
+        'DOCKER_SOCKET',
         'HOSTNAME_LABEL',
+        'IGNORE_LABEL',
+        'DNS_RECORD_TTL',
         'DEFAULT_NETWORK',
         'REFRESH_INTERVAL',
-        'ONE_SHOT',
-        'NAMESERVER',
-        'TSIG_NAME'
+        'ONE_SHOT'
     ]
     missing_vars = []
     for item in required_vars:
@@ -80,9 +81,10 @@ def loop():
 
 
 def get_config():
-    config_file = sys.argv[1] if len(sys.argv) >= 2 else 'config'
+    config_file = sys.argv[1] if len(sys.argv) >= 2 else 'config.env'
 
     x = {
+        **dotenv_values(os.path.join(os.path.dirname(__file__), 'default.config.env')),
         **dotenv_values(os.path.join(os.getcwd(), config_file)),
         **os.environ
     }

@@ -24,7 +24,7 @@ def add_records(records):
             rrtype = "AAAA"
 
         update = dns.update.Update(config['DOMAIN'], keyring=keyring)
-        update.add(hostname, 60, rrtype, ip)
+        update.add(hostname, int(config['DNS_RECORD_TTL']), rrtype, ip)
         dns.query.tcp(update, config['NAMESERVER'], timeout=2)
 
 
