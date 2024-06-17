@@ -1,5 +1,6 @@
 **
 
-!Pipfile
-!main.py
-!lib/
+!docker_nsupdate_ddns
+!pyproject.toml
+!README.md
+!LICENSE.md

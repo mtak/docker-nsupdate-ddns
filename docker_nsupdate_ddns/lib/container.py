@@ -1,6 +1,10 @@
+import logging
+
 import docker
 
 config = {}
+
+LOG = logging.getLogger(__name__)
 
 
 def get_container_name(container):
@@ -9,7 +13,7 @@ def get_container_name(container):
       - Check if hostname_label is set
       - Fall back to container Name
     """
-    x = container.attrs['Name'][1:]
+    x = container.attrs['Name'][1:]  # TODO: also take Hostname -> container.attrs['Config']['Hostname']
 
     if config['HOSTNAME_LABEL'] in container.attrs['Config']['Labels']:
         x = container.attrs['Config']['Labels'][config['HOSTNAME_LABEL']]
@@ -46,6 +50,7 @@ def generate_container_list():
 
     for container in container_list:
         if config['IGNORE_LABEL'] in container.attrs['Config']['Labels']:
+            LOG.debug(f"Ignoring container {container.attrs['Name']} as ignore label present")
             continue
 
         container_name = get_container_name(container)
