@@ -47,6 +47,9 @@ def check_required_vars(_config):
             LOG.info(f"Detected config value: {item}={_config[item]}")
         else:
             missing_vars.append(item)
+    if 'TSIG_KEY' not in _config:
+        # Don't log it as it's a secret
+        missing_vars.append('TSIG_KEY')
     if len(missing_vars) > 1:
         LOG.error(f"Missing required config: {', '.join(missing_vars)}")
         exit(1)
