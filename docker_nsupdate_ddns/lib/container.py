@@ -13,7 +13,7 @@ def get_container_name(container):
       - Check if hostname_label is set
       - Fall back to container Name
     """
-    x = container.attrs['Name'][1:]  # TODO: also take Hostname -> container.attrs['Config']['Hostname']
+    x = container.attrs['Name'][1:]
 
     if config['HOSTNAME_LABEL'] in container.attrs['Config']['Labels']:
         x = container.attrs['Config']['Labels'][config['HOSTNAME_LABEL']]
