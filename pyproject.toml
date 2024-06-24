@@ -1,0 +1,39 @@
+[project]
+name = "docker-nsupdate-ddns"
+version = "0.1"
+description = "Docker DNS update in Bind9 with nsupdate based on docker container hostname or docker label"
+readme = "README.md"
+requires-python = ">=3"
+keywords = [
+    "nsupdate",
+    "docker",
+    "ddns",
+    "dns",
+    "bind9"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python"
+]
+dependencies = [
+    "docker",
+    "python-dotenv",
+    "dnspython"
+]
+license = {file = "LICENSE.md"}
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["docker_nsupdate_ddns*"]
+
+[tool.setuptools.package-data]
+docker_nsupdate_ddns = ["default.config.env"]
+
+[project.urls]
+homepage = "https://github.com/mtak/docker-nsupdate-ddns"
+repository = "https://github.com/mtak/docker-nsupdate-ddns"
+
+[project.scripts]
+docker-nsupdate-ddns = "docker_nsupdate_ddns.main:main"

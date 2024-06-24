@@ -1,6 +1,10 @@
+import logging
+
 import docker
 
 config = {}
+
+LOG = logging.getLogger(__name__)
 
 
 def get_container_name(container):
@@ -46,6 +50,7 @@ def generate_container_list():
 
     for container in container_list:
         if config['IGNORE_LABEL'] in container.attrs['Config']['Labels']:
+            LOG.debug(f"Ignoring container {container.attrs['Name']} as ignore label present")
             continue
 
         container_name = get_container_name(container)

@@ -4,42 +4,59 @@ This script pushes container/ip information from local Docker instance to a DNS 
 
 Every REFRESH_INTERVAL seconds, it queries all the Docker containers on the local host, finds their IP and pushes it with the name to the DNS server.
 
-## Running
+## Configuration
+The script takes environment variables or a config file. A sample config file is provided in [`sample.config.env`](sample.config.env).
 
-The script takes environment variables or a config file. A sample config file is provided in `config.sample`. The file name of the config file can be passed as argument, but defaults to `config`.
+The file name of the config file can be passed as argument, but defaults to `/config.env`.
 
 The names of the environment variables is the same as in the config file. Environment variables have precendence over the config file.
+
+| Config           | Required | Default Value                         | Description                                                                                                                                                                                                                                             |
+|------------------|----------|---------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| DOMAIN           | Yes      |                                       | Sets the domain in which the records are created. Needs to match the Bind zone.                                                                                                                                                                         |
+| NAMESERVER       | Yes      |                                       | Nameserver to push updates to.                                                                                                                                                                                                                          |
+| TSIG_NAME        | Yes      |                                       | TSIG key name for secure updates.                                                                                                                                                                                                                       |
+| TSIG_KEY         | Yes      |                                       | TSIG key value for secure updates.                                                                                                                                                                                                                      |
+| DOCKER_SOCKET    | No       | /var/run/docker.sock                  | Sets the location of the Docker socket.                                                                                                                                                                                                                 |
+| HOSTNAME_LABEL   | No       | nl.mtak.docker-nsupdate-ddns.hostname | Docker label to override the default record name with. Use with `docker --label=nl.mtak.docker-nsupdate-ddns.hostname=nginx` to get `nginx.int.mtak.nl` _If the label value present on the container, use it as hostname otherwise the container name._ |
+| IGNORE_LABEL     | No       | nl.mtak.docker-nsupdate-ddns.ignore   | Container label to exclude containers from DNS updates.                                                                                                                                                                                                 |
+| DNS_RECORD_TTL   | No       | 60                                    | Time to Live (TTL) for DNS records (seconds).                                                                                                                                                                                                           |
+| DEFAULT_NETWORK  | No       |                                       | Preferred network name to find IP for, in case there are multiple networks.                                                                                                                                                                             |
+| REFRESH_INTERVAL | No       | 60                                    | Interval between checks for container changes (seconds).                                                                                                                                                                                                |
+| ONE_SHOT         | No       | False                                 | Run once and exit instead of continuously monitoring.                                                                                                                                                                                                   |
 
 ### Environment variables
 ```bash
 docker run -d \
    -v /var/run/docker.sock:/var/run/docker.sock \
-   -e DOCKER_SOCKET=/var/run/docker.sock \
    -e DOMAIN=int.mtak.nl \
-   -e IGNORE_LABEL=nl.mtak.docker-nsupdate-ddns.ignore \
-   -e HOSTNAME_LABEL=nl.mtak.docker-nsupdate-ddns.hostname \
-   -e DEFAULT_NETWORK=10.100.0.192/26 \
-   -e REFRESH_INTERVAL=5 \
-   -e ONE_SHOT=True \
    -e NAMESERVER=10.100.0.11 \
    -e TSIG_NAME=dck1 \
    -e TSIG_KEY=SyYXDCJ4kIs3qhvI= \
+   -e DOCKER_SOCKET=/var/run/docker.sock \
+   -e HOSTNAME_LABEL=nl.mtak.docker-nsupdate-ddns.hostname \
+   -e IGNORE_LABEL=nl.mtak.docker-nsupdate-ddns.ignore \
+   -e DNS_RECORD_TTL=60 \
+   -e DEFAULT_NETWORK=10.100.0.192/26 \
+   -e REFRESH_INTERVAL=60 \
+   -e ONE_SHOT=true \
    merijntjetak/docker-nsupdate-ddns:latest
 ```
 
 ### Config file
 ```bash
-cat <<EOF >configfile
-DOCKER_SOCKET=/var/run/docker.sock
+cat <<EOF > configfile
 DOMAIN=int.mtak.nl
-IGNORE_LABEL=nl.mtak.docker-nsupdate-ddns.ignore
-HOSTNAME_LABEL=nl.mtak.docker-nsupdate-ddns.hostname
-DEFAULT_NETWORK=10.100.0.192/26
-REFRESH_INTERVAL=5
-ONE_SHOT=True
 NAMESERVER=10.100.0.11
 TSIG_NAME=dck1
 TSIG_KEY=SyYXDCJ4kIs3qhvI=
+DOCKER_SOCKET=/var/run/docker.sock
+HOSTNAME_LABEL=nl.mtak.docker-nsupdate-ddns.hostname
+IGNORE_LABEL=nl.mtak.docker-nsupdate-ddns.ignore
+DNS_RECORD_TTL=60
+DEFAULT_NETWORK=10.100.0.192/26
+REFRESH_INTERVAL=60
+ONE_SHOT=False
 EOF
 
 docker run -d \
@@ -49,25 +66,13 @@ docker run -d \
 
 ```
 
-### Configuration
-
-- `DOCKER_SOCKET` - Sets the location of the Docker socket
-- `DOMAIN` - Sets the domain in which the records are created. Needs to match the Bind zone.
-- `HOSTNAME_LABEL` - Docker label to override the default record name with. Use with `docker --label=nl.mtak.docker-nsupdate-ddns.hostname=nginx` to get `nginx.int.mtak.nl`
-- `DEFAULT_NETWORK` - Preferred network to find IP for, in case there are multiple networks
-- `REFRESH_INTERVAL` - Interval between updates
-- `ONE_SHOT` - Set to True for the script to update once and immediately quit (nice for debugging)
-- `NAMESERVER` - Nameserver to push updates to
-- `TSIG_NAME` - Name of the TSIG key
-- `TSIG_KEY` - TSIG-KEY
-
 ### Bind9 integration
 
 1. Generate a key
 
-    `tsig-keygen clientname >/etc/bind/keys/clientname.key`
+    `tsig-keygen clientname > /etc/bind/keys/clientname.key`
 
-2. Include keys in your Bind9 configuration
+2. Include keys in your Bind9 `named.config` configuration file
 
     `include "/etc/bind/keys/*";`
 
